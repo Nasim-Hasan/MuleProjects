@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="65eb1240-e0bd-48bf-98ae-146bc4bc4033" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="0d95b409-43ea-474e-b6b4-c6dd4d0ffc98" >
+		<db:my-sql-connection host="127.0.0.1" port="3306" user="root" password="123*456#" database="sampleDatabase"/>
+	</db:config>
+	<flow name="dbunittestdemoFlow" doc:id="0253455f-3f25-46eb-b389-e3c93f22a12c" >
+		<http:listener doc:name="Listener" doc:id="c1ee2991-a24f-437b-b5bc-01a838a86241" config-ref="HTTP_Listener_config" path="\submit"/>
+		<db:delete doc:name="Select" doc:id="58ca9b87-6feb-4e69-8497-a1d7af7dba3f" config-ref="Database_Config">
+			<db:sql ><![CDATA[Select * from tutorials_tbl]]></db:sql>
+		</db:delete>
+		<logger level="INFO" doc:name="Logger" doc:id="d5e7883f-fac0-4acb-a5a5-30f774835a4d" />
+		<ee:transform doc:name="Transform Message" doc:id="f588f536-df99-453d-98fe-eaa3184d006a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="6c9c2e07-8337-4402-aa9b-b394471e4c8a" />
+	</flow>
+</mule>
